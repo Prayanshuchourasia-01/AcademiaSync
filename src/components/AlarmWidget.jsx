@@ -1,14 +1,16 @@
 import React, { useState, useEffect } from 'react';
 import { useScheduler } from '../context/SchedulerContext';
-import { Bell, Volume2, VolumeX, ShieldCheck, Sparkles, Check, Smartphone, Globe, RefreshCw } from 'lucide-react';
+import { Bell, Volume2, VolumeX, ShieldCheck, Globe, RefreshCw, Upload, Download, Key } from 'lucide-react';
 import { playAlarmSound, requestNativeNotificationPermission, triggerSystemAlarmNotification } from '../utils/audioAlarmEngine';
-import { syncToCloud, exportAppStateJSON } from '../utils/cloudSyncEngine';
+import { syncToCloud, exportAppStateJSON, importAppStateJSON, getSyncRoomId, setSyncRoomId } from '../utils/cloudSyncEngine';
 
 const AlarmWidget = () => {
-  const { schedule, systemDate, subjects, exams, assignments } = useScheduler();
+  const { schedule, systemDate, subjects, exams, assignments, addNotification } = useScheduler();
   const [notifPermission, setNotifPermission] = useState('default');
-  const [cloudStatus, setCloudStatus] = useState('synced'); // 'synced' | 'syncing'
+  const [cloudStatus, setCloudStatus] = useState('synced');
   const [soundEnabled, setSoundEnabled] = useState(true);
+  const [syncRoom, setSyncRoom] = useState(getSyncRoomId());
+  const [showSyncModal, setShowSyncModal] = useState(false);
 
   useEffect(() => {
     if ('Notification' in window) {
@@ -20,7 +22,7 @@ const AlarmWidget = () => {
     const res = await requestNativeNotificationPermission();
     setNotifPermission(res);
     if (res === 'granted') {
-      triggerSystemAlarmNotification('Desktop Alarms Enabled!', 'Native OS background alarm notifications active.', 'chime');
+      triggerSystemAlarmNotification('Desktop Alarms Enabled!', 'Native background alarms active.', 'chime');
     }
   };
 
@@ -36,11 +38,36 @@ const AlarmWidget = () => {
     await syncToCloud({ schedule, systemDate, subjects, exams, assignments });
     setTimeout(() => {
       setCloudStatus('synced');
-    }, 600);
+      addNotification('Cloud Sync Complete', `Data synced under Room ID: ${syncRoom}`, 'success');
+    }, 500);
+  };
+
+  const handleSaveSyncRoom = (e) => {
+    e.preventDefault();
+    setSyncRoomId(syncRoom);
+    setShowSyncModal(false);
+    handleCloudSync();
   };
 
   const handleExportJSON = () => {
     exportAppStateJSON({ schedule, systemDate, subjects, exams, assignments });
+  };
+
+  const handleImportJSON = (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = (event) => {
+      const res = importAppStateJSON(event.target.result);
+      if (res.success) {
+        localStorage.setItem('academia_schedule', JSON.stringify(res.data.schedule || schedule));
+        localStorage.setItem('academia_system_date', res.data.systemDate || systemDate);
+        window.location.reload();
+      } else {
+        alert('Invalid JSON file format.');
+      }
+    };
+    reader.readAsText(file);
   };
 
   return (
@@ -54,7 +81,7 @@ const AlarmWidget = () => {
           <div className="widget-title">Native App Alarms & Audio Synth</div>
           <div className="widget-sub">
             {notifPermission === 'granted' ? (
-              <span className="status-good"><ShieldCheck size={12} /> OS Desktop Notifications Active</span>
+              <span className="status-good"><ShieldCheck size={12} /> OS Notifications Active</span>
             ) : (
               <span className="status-warn">Permission needed for background alarms</span>
             )}
@@ -89,23 +116,65 @@ const AlarmWidget = () => {
         </button>
       </div>
 
-      {/* Cloud Web Sync Status */}
+      {/* Cross-Device Sync Status (Laptop <-> Phone) */}
       <div className="widget-col right-col">
         <div className="cloud-sync-info">
           <Globe size={16} className="text-info" />
-          <span>Web & App Cloud Sync:</span>
-          <span className="cloud-badge">{cloudStatus === 'synced' ? '🟢 Online Synced' : '🔄 Syncing...'}</span>
+          <span>Sync Room:</span>
+          <button className="room-id-chip" onClick={() => setShowSyncModal(true)} title="Configure Cross-Device Sync Room">
+            <Key size={12} />
+            <span>{syncRoom}</span>
+          </button>
         </div>
 
         <button className="btn-secondary btn-sm" onClick={handleCloudSync}>
           <RefreshCw size={14} className={cloudStatus === 'syncing' ? 'spin' : ''} />
-          <span>Sync Cloud</span>
+          <span>Sync Now</span>
         </button>
 
-        <button className="btn-action btn-custom btn-sm" onClick={handleExportJSON} title="Export Cloud Data JSON">
-          Export App Data
+        <button className="btn-action btn-custom btn-sm" onClick={handleExportJSON} title="Export JSON to laptop/phone">
+          <Download size={14} />
+          <span>Export</span>
         </button>
+
+        <label className="btn-action btn-boost btn-sm cursor-pointer" title="Import JSON data from laptop/phone">
+          <Upload size={14} />
+          <span>Import</span>
+          <input type="file" accept=".json" onChange={handleImportJSON} style={{ display: 'none' }} />
+        </label>
       </div>
+
+      {/* Sync Room Modal */}
+      {showSyncModal && (
+        <div className="modal-overlay">
+          <div className="modal-card card-glass">
+            <div className="modal-header">
+              <h3>Configure Cross-Device Cloud Sync Room</h3>
+              <button className="btn-close" onClick={() => setShowSyncModal(false)}>✕</button>
+            </div>
+            <form onSubmit={handleSaveSyncRoom} className="modal-form">
+              <p className="modal-description">
+                Enter the exact same <strong>Sync Passcode / Room ID</strong> on your Laptop and Mobile Phone to pair them instantly!
+              </p>
+              <div className="form-group">
+                <label>Sync Passcode / Room ID:</label>
+                <input
+                  type="text"
+                  className="form-control"
+                  value={syncRoom}
+                  onChange={(e) => setSyncRoom(e.target.value)}
+                  placeholder="e.g. prayanshu_sync_2026"
+                  required
+                />
+              </div>
+              <div className="modal-footer">
+                <button type="button" className="btn-secondary" onClick={() => setShowSyncModal(false)}>Cancel</button>
+                <button type="submit" className="btn-primary">Pair Devices & Sync</button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
