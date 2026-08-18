@@ -1,0 +1,17 @@
+{
+  "short_name": "AcademiaSync",
+  "name": "AcademiaSync — Dynamic Academic & Habit Scheduler",
+  "icons": [
+    {
+      "src": "vite.svg",
+      "type": "image/svg+xml",
+      "sizes": "192x192 512x512"
+    }
+  ],
+  "start_url": "/",
+  "background_color": "#090d16",
+  "theme_color": "#6366f1",
+  "display": "standalone",
+  "orientation": "portrait-primary",
+  "description": "Cross-platform Native & Web App for Dynamic Academic & Habit Scheduling with background alarms, holiday reclamation, and web sync."
+}
