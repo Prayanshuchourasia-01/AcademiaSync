@@ -13,7 +13,9 @@ import {
   RefreshCw,
   Plus,
   ChevronLeft,
-  ChevronRight
+  ChevronRight,
+  Menu,
+  X
 } from 'lucide-react';
 import { addDays, formatDisplayDate } from '../utils/dateUtils';
 
@@ -35,6 +37,7 @@ const Navbar = ({
   } = useScheduler();
 
   const [showNotifDropdown, setShowNotifDropdown] = useState(false);
+  const [showQuickActions, setShowQuickActions] = useState(false);
 
   const unreadCount = notifications.filter(n => !n.read).length;
 
@@ -43,49 +46,45 @@ const Navbar = ({
 
   return (
     <header className="navbar-container">
-      {/* Brand Header */}
-      <div className="navbar-top">
+      {/* Mobile & Desktop Header Bar */}
+      <div className="navbar-top card-glass">
         <div className="brand-section">
           <div className="logo-badge">
             <Zap className="logo-icon" />
           </div>
-          <div>
+          <div className="brand-titles">
             <h1 className="brand-title">AcademiaSync</h1>
-            <p className="brand-subtitle">Module 2: Dynamic Academic & Habit Scheduler</p>
+            <span className="app-version-badge">NATIVE APP</span>
           </div>
         </div>
 
         {/* Custom Reference System Date Controller */}
         <div className="date-control-card">
-          <div className="date-control-label">
-            <Clock className="date-icon" />
-            <span>Simulated System Reference Date:</span>
-          </div>
-          <div className="date-picker-group">
-            <button
-              className="btn-date-nav"
-              onClick={handlePrevDay}
-              title="Previous Day"
-            >
-              <ChevronLeft size={16} />
-            </button>
+          <button
+            className="btn-date-nav"
+            onClick={handlePrevDay}
+            title="Previous Day"
+          >
+            <ChevronLeft size={18} />
+          </button>
 
+          <div className="date-display-group">
             <input
               type="date"
               className="date-input"
               value={systemDate}
               onChange={(e) => e.target.value && setSystemDate(e.target.value)}
             />
-
-            <button
-              className="btn-date-nav"
-              onClick={handleNextDay}
-              title="Next Day"
-            >
-              <ChevronRight size={16} />
-            </button>
+            <span className="date-formatted-text">{formatDisplayDate(systemDate)}</span>
           </div>
-          <span className="date-formatted-text">{formatDisplayDate(systemDate)}</span>
+
+          <button
+            className="btn-date-nav"
+            onClick={handleNextDay}
+            title="Next Day"
+          >
+            <ChevronRight size={18} />
+          </button>
         </div>
 
         {/* Header Right Actions */}
@@ -105,7 +104,7 @@ const Navbar = ({
               <div className="notif-dropdown card-glass">
                 <div className="notif-header">
                   <h4>Alarms & Schedule Shifts</h4>
-                  <span className="notif-count">{notifications.length} alerts</span>
+                  <button className="btn-close-sm" onClick={() => setShowNotifDropdown(false)}><X size={16} /></button>
                 </div>
                 <div className="notif-list">
                   {notifications.length === 0 ? (
@@ -125,94 +124,96 @@ const Navbar = ({
           </div>
 
           <button
-            className="btn-secondary"
+            className="btn-secondary btn-icon-only-mobile"
             onClick={triggerCascadeMissedBlocks}
             title="Scan & Cascade Missed Blocks"
           >
             <RefreshCw size={16} />
-            <span>Cascade Missed</span>
+            <span className="hide-mobile">Cascade Missed</span>
           </button>
 
           <button
-            className="btn-outline-danger"
-            onClick={resetDefaults}
-            title="Reset Mock Data"
+            className="btn-action-trigger"
+            onClick={() => setShowQuickActions(!showQuickActions)}
+            title="Dynamic Engine Modals"
           >
-            Reset Demo
+            {showQuickActions ? <X size={20} /> : <Zap size={20} />}
           </button>
         </div>
       </div>
 
-      {/* Quick Action Engine Triggers */}
-      <div className="quick-actions-bar">
-        <span className="quick-action-title">Dynamic Scheduling Actions:</span>
+      {/* Quick Action Engine Triggers Drawer / Bar */}
+      {(showQuickActions || window.innerWidth > 768) && (
+        <div className="quick-actions-bar card-glass">
+          <span className="quick-action-title">Scheduler Engines:</span>
 
-        <button className="btn-action btn-holiday" onClick={onOpenHolidayModal}>
-          <Coffee size={16} />
-          <span>Mark Day as Off (Holiday)</span>
-        </button>
+          <button className="btn-action btn-holiday" onClick={onOpenHolidayModal}>
+            <Coffee size={16} />
+            <span>Mark Day Off</span>
+          </button>
 
-        <button className="btn-action btn-vacation" onClick={onOpenVacationModal}>
-          <Umbrella size={16} />
-          <span>Vacation Mode / Blackout</span>
-        </button>
+          <button className="btn-action btn-vacation" onClick={onOpenVacationModal}>
+            <Umbrella size={16} />
+            <span>Vacation Mode</span>
+          </button>
 
-        <button className="btn-action btn-urgent" onClick={onOpenExamAssignModal}>
-          <AlertTriangle size={16} />
-          <span>Exam / Sudden Assignment</span>
-        </button>
+          <button className="btn-action btn-urgent" onClick={onOpenExamAssignModal}>
+            <AlertTriangle size={16} />
+            <span>Exam / Assignment</span>
+          </button>
 
-        <button className="btn-action btn-boost" onClick={onOpenBoostModal}>
-          <Zap size={16} />
-          <span>Boost Subject</span>
-        </button>
+          <button className="btn-action btn-boost" onClick={onOpenBoostModal}>
+            <Zap size={16} />
+            <span>Boost Subject</span>
+          </button>
 
-        <button className="btn-action btn-custom" onClick={onOpenCustomBlockModal}>
-          <Plus size={16} />
-          <span>Add Study Block</span>
-        </button>
-      </div>
+          <button className="btn-action btn-custom" onClick={onOpenCustomBlockModal}>
+            <Plus size={16} />
+            <span>Add Study Block</span>
+          </button>
+        </div>
+      )}
 
-      {/* Navigation Tabs */}
-      <nav className="tab-nav">
+      {/* NATIVE MOBILE BOTTOM NAVIGATION DOCK */}
+      <nav className="mobile-bottom-dock card-glass">
         <button
-          className={`tab-btn ${activeTab === 'schedule' ? 'active' : ''}`}
+          className={`dock-btn ${activeTab === 'schedule' ? 'active' : ''}`}
           onClick={() => setActiveTab('schedule')}
         >
-          <Calendar size={18} />
-          <span>Daily & Weekly Timeline</span>
+          <Calendar size={22} />
+          <span>Timetable</span>
         </button>
 
         <button
-          className={`tab-btn ${activeTab === 'hud' ? 'active' : ''}`}
+          className={`dock-btn ${activeTab === 'hud' ? 'active' : ''}`}
           onClick={() => setActiveTab('hud')}
         >
-          <Clock size={18} />
-          <span>Focus HUD & Countdown</span>
+          <Clock size={22} />
+          <span>Focus HUD</span>
         </button>
 
         <button
-          className={`tab-btn ${activeTab === 'exams' ? 'active' : ''}`}
+          className={`dock-btn ${activeTab === 'exams' ? 'active' : ''}`}
           onClick={() => setActiveTab('exams')}
         >
-          <Award size={18} />
-          <span>Exams & Assignments</span>
+          <Award size={22} />
+          <span>Exams</span>
         </button>
 
         <button
-          className={`tab-btn ${activeTab === 'tentative' ? 'active' : ''}`}
+          className={`dock-btn ${activeTab === 'tentative' ? 'active' : ''}`}
           onClick={() => setActiveTab('tentative')}
         >
-          <Zap size={18} />
-          <span>Soft Events (Tentative)</span>
+          <Zap size={22} />
+          <span>Soft Events</span>
         </button>
 
         <button
-          className={`tab-btn ${activeTab === 'reports' ? 'active' : ''}`}
+          className={`dock-btn ${activeTab === 'reports' ? 'active' : ''}`}
           onClick={() => setActiveTab('reports')}
         >
-          <BarChart3 size={18} />
-          <span>Reports & Boundaries</span>
+          <BarChart3 size={22} />
+          <span>Reports</span>
         </button>
       </nav>
     </header>
