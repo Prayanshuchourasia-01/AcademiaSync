@@ -14,10 +14,9 @@ import {
   Plus,
   ChevronLeft,
   ChevronRight,
-  Menu,
   X
 } from 'lucide-react';
-import { addDays, formatDisplayDate } from '../utils/dateUtils';
+import { addDays, formatDisplayDate, formatDate } from '../utils/dateUtils';
 
 const Navbar = ({
   onOpenHolidayModal,
@@ -32,8 +31,7 @@ const Navbar = ({
     activeTab,
     setActiveTab,
     notifications,
-    triggerCascadeMissedBlocks,
-    resetDefaults
+    triggerCascadeMissedBlocks
   } = useScheduler();
 
   const [showNotifDropdown, setShowNotifDropdown] = useState(false);
@@ -43,6 +41,13 @@ const Navbar = ({
 
   const handlePrevDay = () => setSystemDate(addDays(systemDate, -1));
   const handleNextDay = () => setSystemDate(addDays(systemDate, 1));
+
+  const handleDateChange = (e) => {
+    const val = e.target.value;
+    if (val) {
+      setSystemDate(formatDate(val));
+    }
+  };
 
   return (
     <header className="navbar-container">
@@ -61,6 +66,7 @@ const Navbar = ({
         {/* Custom Reference System Date Controller */}
         <div className="date-control-card">
           <button
+            type="button"
             className="btn-date-nav"
             onClick={handlePrevDay}
             title="Previous Day"
@@ -72,13 +78,14 @@ const Navbar = ({
             <input
               type="date"
               className="date-input"
-              value={systemDate}
-              onChange={(e) => e.target.value && setSystemDate(e.target.value)}
+              value={formatDate(systemDate)}
+              onChange={handleDateChange}
             />
             <span className="date-formatted-text">{formatDisplayDate(systemDate)}</span>
           </div>
 
           <button
+            type="button"
             className="btn-date-nav"
             onClick={handleNextDay}
             title="Next Day"
@@ -92,6 +99,7 @@ const Navbar = ({
           {/* Notifications Bell */}
           <div className="notif-wrapper">
             <button
+              type="button"
               className="btn-icon"
               onClick={() => setShowNotifDropdown(!showNotifDropdown)}
               title="System Alarms & Notifications"
@@ -104,7 +112,9 @@ const Navbar = ({
               <div className="notif-dropdown card-glass">
                 <div className="notif-header">
                   <h4>Alarms & Schedule Shifts</h4>
-                  <button className="btn-close-sm" onClick={() => setShowNotifDropdown(false)}><X size={16} /></button>
+                  <button type="button" className="btn-close-sm" onClick={() => setShowNotifDropdown(false)}>
+                    <X size={16} />
+                  </button>
                 </div>
                 <div className="notif-list">
                   {notifications.length === 0 ? (
@@ -124,6 +134,7 @@ const Navbar = ({
           </div>
 
           <button
+            type="button"
             className="btn-secondary btn-icon-only-mobile"
             onClick={triggerCascadeMissedBlocks}
             title="Scan & Cascade Missed Blocks"
@@ -133,50 +144,52 @@ const Navbar = ({
           </button>
 
           <button
+            type="button"
             className="btn-action-trigger"
             onClick={() => setShowQuickActions(!showQuickActions)}
-            title="Dynamic Engine Modals"
+            title="Scheduler Engine Tools"
           >
             {showQuickActions ? <X size={20} /> : <Zap size={20} />}
           </button>
         </div>
       </div>
 
-      {/* Quick Action Engine Triggers Drawer / Bar */}
-      {(showQuickActions || window.innerWidth > 768) && (
+      {/* Quick Action Engine Triggers Drawer */}
+      {showQuickActions && (
         <div className="quick-actions-bar card-glass">
           <span className="quick-action-title">Scheduler Engines:</span>
 
-          <button className="btn-action btn-holiday" onClick={onOpenHolidayModal}>
+          <button type="button" className="btn-action btn-holiday" onClick={() => { onOpenHolidayModal(); setShowQuickActions(false); }}>
             <Coffee size={16} />
             <span>Mark Day Off</span>
           </button>
 
-          <button className="btn-action btn-vacation" onClick={onOpenVacationModal}>
+          <button type="button" className="btn-action btn-vacation" onClick={() => { onOpenVacationModal(); setShowQuickActions(false); }}>
             <Umbrella size={16} />
             <span>Vacation Mode</span>
           </button>
 
-          <button className="btn-action btn-urgent" onClick={onOpenExamAssignModal}>
+          <button type="button" className="btn-action btn-urgent" onClick={() => { onOpenExamAssignModal(); setShowQuickActions(false); }}>
             <AlertTriangle size={16} />
             <span>Exam / Assignment</span>
           </button>
 
-          <button className="btn-action btn-boost" onClick={onOpenBoostModal}>
+          <button type="button" className="btn-action btn-boost" onClick={() => { onOpenBoostModal(); setShowQuickActions(false); }}>
             <Zap size={16} />
             <span>Boost Subject</span>
           </button>
 
-          <button className="btn-action btn-custom" onClick={onOpenCustomBlockModal}>
+          <button type="button" className="btn-action btn-custom" onClick={() => { onOpenCustomBlockModal(); setShowQuickActions(false); }}>
             <Plus size={16} />
             <span>Add Study Block</span>
           </button>
         </div>
       )}
 
-      {/* NATIVE MOBILE BOTTOM NAVIGATION DOCK */}
+      {/* NATIVE MOBILE BOTTOM NAVIGATION DOCK (100% Interactive Button Items) */}
       <nav className="mobile-bottom-dock card-glass">
         <button
+          type="button"
           className={`dock-btn ${activeTab === 'schedule' ? 'active' : ''}`}
           onClick={() => setActiveTab('schedule')}
         >
@@ -185,6 +198,7 @@ const Navbar = ({
         </button>
 
         <button
+          type="button"
           className={`dock-btn ${activeTab === 'hud' ? 'active' : ''}`}
           onClick={() => setActiveTab('hud')}
         >
@@ -193,6 +207,7 @@ const Navbar = ({
         </button>
 
         <button
+          type="button"
           className={`dock-btn ${activeTab === 'exams' ? 'active' : ''}`}
           onClick={() => setActiveTab('exams')}
         >
@@ -201,6 +216,7 @@ const Navbar = ({
         </button>
 
         <button
+          type="button"
           className={`dock-btn ${activeTab === 'tentative' ? 'active' : ''}`}
           onClick={() => setActiveTab('tentative')}
         >
@@ -209,6 +225,7 @@ const Navbar = ({
         </button>
 
         <button
+          type="button"
           className={`dock-btn ${activeTab === 'reports' ? 'active' : ''}`}
           onClick={() => setActiveTab('reports')}
         >

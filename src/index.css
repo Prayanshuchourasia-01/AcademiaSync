@@ -62,6 +62,12 @@ body {
   overflow-x: hidden;
 }
 
+/* Allow text input selection inside form controls */
+input, select, textarea, .form-control {
+  user-select: text !important;
+  -webkit-user-select: text !important;
+}
+
 #root {
   min-height: 100vh;
   display: flex;
@@ -77,10 +83,6 @@ body {
   border-radius: var(--radius-md);
   box-shadow: var(--shadow-card);
   transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
-}
-
-.card-glass:active {
-  transform: scale(0.99);
 }
 
 /* APP SHELL CONTAINER */
@@ -308,14 +310,14 @@ body {
 .notif-item-msg { color: var(--text-secondary); font-size: 0.75rem; }
 .notif-item-time { font-size: 0.7rem; color: var(--text-muted); margin-top: 4px; }
 
-/* Quick Actions Bar */
+/* Quick Actions Bar (Neat Alignment Grid) */
 .quick-actions-bar {
-  display: flex;
-  align-items: center;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
   gap: 10px;
-  flex-wrap: wrap;
-  padding: 12px 16px;
+  padding: 14px;
   border-radius: var(--radius-md);
+  align-items: center;
 }
 
 .quick-action-title {
@@ -324,24 +326,26 @@ body {
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.05em;
-  width: 100%;
-  margin-bottom: 2px;
+  grid-column: 1 / -1;
+  margin-bottom: 4px;
 }
 
 .btn-action {
   background: rgba(255, 255, 255, 0.06);
   border: 1px solid var(--border-glass);
   color: white;
-  padding: 10px 16px;
-  border-radius: 30px;
+  padding: 10px 14px;
+  border-radius: 12px;
   font-size: 0.82rem;
   font-weight: 600;
   cursor: pointer;
   display: flex;
   align-items: center;
+  justify-content: center;
   gap: 8px;
   transition: all 0.2s;
   min-height: 44px;
+  width: 100%;
 }
 
 .btn-action:active {
@@ -354,14 +358,14 @@ body {
 .btn-boost { background: rgba(139, 92, 246, 0.2); border-color: rgba(139, 92, 246, 0.5); color: var(--accent-purple); }
 .btn-custom { background: rgba(99, 102, 241, 0.2); border-color: rgba(99, 102, 241, 0.5); color: var(--accent-primary); }
 
-/* NATIVE MOBILE BOTTOM NAVIGATION DOCK */
+/* NATIVE MOBILE BOTTOM NAVIGATION DOCK (100% Interactive Button Items) */
 .mobile-bottom-dock {
   position: fixed;
   bottom: 0;
   left: 0;
   right: 0;
   height: 72px;
-  background: rgba(11, 15, 25, 0.95);
+  background: rgba(11, 15, 25, 0.96);
   backdrop-filter: blur(25px);
   -webkit-backdrop-filter: blur(25px);
   border-top: 1px solid var(--border-glass);
@@ -381,7 +385,7 @@ body {
   align-items: center;
   justify-content: center;
   gap: 3px;
-  font-size: 0.7rem;
+  font-size: 0.72rem;
   font-weight: 600;
   cursor: pointer;
   flex: 1;
@@ -849,4 +853,5 @@ body {
   .btn-icon-only-mobile { padding: 8px !important; min-width: 42px; min-height: 42px; }
   .right-col { width: 100%; margin-left: 0; justify-content: space-between; }
   .center-col { width: 100%; justify-content: space-between; }
+  .quick-actions-bar { grid-template-columns: 1fr 1fr; }
 }
