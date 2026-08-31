@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">AcademiaSync</string>
+    <string name="title_activity_main">AcademiaSync</string>
+    <string name="package_name">com.academiasync.app</string>
+    <string name="custom_url_scheme">com.academiasync.app</string>
+</resources>
