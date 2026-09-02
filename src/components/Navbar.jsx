@@ -14,6 +14,7 @@ import {
   Plus,
   ChevronLeft,
   ChevronRight,
+  Download,
   X
 } from 'lucide-react';
 import { addDays, formatDisplayDate, formatDate } from '../utils/dateUtils';
@@ -23,7 +24,8 @@ const Navbar = ({
   onOpenVacationModal,
   onOpenExamAssignModal,
   onOpenBoostModal,
-  onOpenCustomBlockModal
+  onOpenCustomBlockModal,
+  onOpenBackupModal
 }) => {
   const {
     systemDate,
@@ -182,6 +184,11 @@ const Navbar = ({
           <button type="button" className="btn-action btn-custom" onClick={() => { onOpenCustomBlockModal(); setShowQuickActions(false); }}>
             <Plus size={16} />
             <span>Add Study Block</span>
+          </button>
+
+          <button type="button" className="btn-action btn-boost" onClick={() => { onOpenBackupModal(); setShowQuickActions(false); }}>
+            <Download size={16} />
+            <span>Backup / Restore</span>
           </button>
         </div>
       )}

@@ -15,6 +15,7 @@ import ExamAssignModal from './components/modals/ExamAssignModal';
 import SubjectBoostModal from './components/modals/SubjectBoostModal';
 import CustomBlockModal from './components/modals/CustomBlockModal';
 import TentativeModal from './components/modals/TentativeModal';
+import DataBackupModal from './components/modals/DataBackupModal';
 
 const AppContent = () => {
   const { activeTab } = useScheduler();
@@ -26,6 +27,7 @@ const AppContent = () => {
   const [isBoostOpen, setIsBoostOpen] = useState(false);
   const [isCustomBlockOpen, setIsCustomBlockOpen] = useState(false);
   const [isTentativeOpen, setIsTentativeOpen] = useState(false);
+  const [isBackupOpen, setIsBackupOpen] = useState(false);
 
   return (
     <div className="app-container">
@@ -35,6 +37,7 @@ const AppContent = () => {
         onOpenExamAssignModal={() => setIsExamAssignOpen(true)}
         onOpenBoostModal={() => setIsBoostOpen(true)}
         onOpenCustomBlockModal={() => setIsCustomBlockOpen(true)}
+        onOpenBackupModal={() => setIsBackupOpen(true)}
       />
 
       <AlarmWidget />
@@ -64,6 +67,7 @@ const AppContent = () => {
       <SubjectBoostModal isOpen={isBoostOpen} onClose={() => setIsBoostOpen(false)} />
       <CustomBlockModal isOpen={isCustomBlockOpen} onClose={() => setIsCustomBlockOpen(false)} />
       <TentativeModal isOpen={isTentativeOpen} onClose={() => setIsTentativeOpen(false)} />
+      <DataBackupModal isOpen={isBackupOpen} onClose={() => setIsBackupOpen(false)} />
     </div>
   );
 };

@@ -250,6 +250,17 @@ export const SchedulerProvider = ({ children }) => {
     addNotification('Block Removed', 'Study block removed from timeline.', 'info');
   };
 
+  // Restore state from backup
+  const restoreFullState = (data) => {
+    if (data.systemDate) setSystemDateState(data.systemDate);
+    if (data.schedule) setSchedule(data.schedule);
+    if (data.subjects) setSubjects(data.subjects);
+    if (data.exams) setExams(data.exams);
+    if (data.assignments) setAssignments(data.assignments);
+    if (data.tentativeEvents) setTentativeEvents(data.tentativeEvents);
+    if (data.blackouts) setBlackouts(data.blackouts);
+  };
+
   // Reset to default initial state
   const resetDefaults = () => {
     setSystemDateState(DEFAULT_SYSTEM_DATE);
@@ -289,6 +300,7 @@ export const SchedulerProvider = ({ children }) => {
         toggleBlockCompletion,
         addCustomBlock,
         deleteBlock,
+        restoreFullState,
         resetDefaults,
         addNotification
       }}
