@@ -1,16 +1,18 @@
 import React from 'react';
 import { useScheduler } from '../context/SchedulerContext';
-import { BarChart3, CheckCircle, Coffee, Clock, ShieldCheck, Zap, AlertCircle } from 'lucide-react';
+import { BarChart3, CheckCircle, Coffee, Clock, ShieldCheck, Zap, Award } from 'lucide-react';
 import { formatDisplayDate } from '../utils/dateUtils';
+import { calculateWeightedGPA } from '../utils/gpaCalculator';
 
 const ReportsView = () => {
-  const { systemDate, schedule, subjects, notifications } = useScheduler();
+  const { systemDate, schedule, subjects, exams, notifications } = useScheduler();
 
   // Metrics calculations
   const totalBlocks = schedule.length;
   const completedBlocks = schedule.filter(b => b.status === 'completed').length;
   const reclaimedBlocks = schedule.filter(b => b.type === 'reclaimed' || b.status === 'reclaimed').length;
   const cascadedBlocks = schedule.filter(b => b.type === 'cascaded').length;
+  const currentGPA = calculateWeightedGPA(subjects, exams);
 
   const totalStudyHours = schedule
     .filter(b => b.type !== 'college')
@@ -27,7 +29,7 @@ const ReportsView = () => {
       <div className="tab-header card-glass">
         <div>
           <h2>Weekly & Monthly Boundary Tracking</h2>
-          <p>Verify goal completion, reclaimed holiday hours, and schedule cascade audit logs.</p>
+          <p>Verify goal completion, reclaimed holiday hours, GPA estimations, and schedule cascade audit logs.</p>
         </div>
         <span className="ref-date-chip">Reference Date: {formatDisplayDate(systemDate)}</span>
       </div>
@@ -46,11 +48,11 @@ const ReportsView = () => {
 
         <div className="stat-card card-glass">
           <div className="stat-icon-wrapper icon-amber">
-            <Coffee size={24} />
+            <Award size={24} />
           </div>
           <div className="stat-info">
-            <span className="stat-value">{reclaimedBlocks * 2} Hours</span>
-            <span className="stat-label">Reclaimed Holiday Hours</span>
+            <span className="stat-value">{currentGPA} / 4.0</span>
+            <span className="stat-label">Estimated Weighted GPA</span>
           </div>
         </div>
 
