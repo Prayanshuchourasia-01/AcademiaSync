@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { useScheduler } from '../context/SchedulerContext';
-import { Play, Pause, RotateCcw, CheckCircle, Clock, Award, BookOpen, AlertCircle } from 'lucide-react';
+import { Play, Pause, RotateCcw, CheckCircle, Clock, Award, BookOpen, AlertCircle, Volume2 } from 'lucide-react';
 import { formatDisplayDate, format12Hour } from '../utils/dateUtils';
+import { soundFx } from '../utils/soundEffectsEngine';
 
 const FocusHUD = () => {
   const { systemDate, schedule, subjects, toggleBlockCompletion } = useScheduler();
@@ -12,9 +13,11 @@ const FocusHUD = () => {
 
   const subject = activeBlock ? subjects.find(s => s.id === activeBlock.subjectId) : null;
 
-  // Timer state
+  // Timer state & preset selector
+  const [sessionMinutes, setSessionMinutes] = useState(25);
   const [secondsLeft, setSecondsLeft] = useState(25 * 60);
   const [isRunning, setIsRunning] = useState(false);
+  const [soundEnabled, setSoundEnabled] = useState(true);
 
   useEffect(() => {
     let interval = null;
@@ -22,16 +25,29 @@ const FocusHUD = () => {
       interval = setInterval(() => {
         setSecondsLeft(prev => prev - 1);
       }, 1000);
-    } else if (secondsLeft === 0) {
+    } else if (secondsLeft === 0 && isRunning) {
       setIsRunning(false);
+      if (soundEnabled) soundFx.playChime('complete');
     }
     return () => clearInterval(interval);
-  }, [isRunning, secondsLeft]);
+  }, [isRunning, secondsLeft, soundEnabled]);
 
-  const handleStartPause = () => setIsRunning(!isRunning);
+  const handleStartPause = () => {
+    if (!isRunning && soundEnabled) {
+      soundFx.playChime('start');
+    }
+    setIsRunning(!isRunning);
+  };
+
+  const setPreset = (mins) => {
+    setIsRunning(false);
+    setSessionMinutes(mins);
+    setSecondsLeft(mins * 60);
+  };
+
   const handleReset = () => {
     setIsRunning(false);
-    setSecondsLeft(25 * 60);
+    setSecondsLeft(sessionMinutes * 60);
   };
 
   const formatTimer = (secs) => {
