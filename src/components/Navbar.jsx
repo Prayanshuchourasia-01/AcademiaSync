@@ -15,9 +15,11 @@ import {
   ChevronLeft,
   ChevronRight,
   Download,
+  Flame,
   X
 } from 'lucide-react';
 import { addDays, formatDisplayDate, formatDate } from '../utils/dateUtils';
+import { calculateStreakStats } from '../utils/habitTracker';
 
 const Navbar = ({
   onOpenHolidayModal,
@@ -40,6 +42,7 @@ const Navbar = ({
   const [showQuickActions, setShowQuickActions] = useState(false);
 
   const unreadCount = notifications.filter(n => !n.read).length;
+  const streakStats = calculateStreakStats(schedule, systemDate);
 
   const handlePrevDay = () => setSystemDate(addDays(systemDate, -1));
   const handleNextDay = () => setSystemDate(addDays(systemDate, 1));
@@ -98,6 +101,12 @@ const Navbar = ({
 
         {/* Header Right Actions */}
         <div className="header-actions">
+          {/* Streak Flame Badge */}
+          <div className="streak-badge-pill flex items-center gap-1 px-2.5 py-1 rounded-full bg-amber-500/10 border border-amber-500/30 text-amber-400 font-semibold text-xs" title={`${streakStats.currentStreak} Day Study Streak Active!`}>
+            <Flame size={14} className="text-amber-400 fill-amber-400" />
+            <span>{streakStats.currentStreak}d</span>
+          </div>
+
           {/* Notifications Bell */}
           <div className="notif-wrapper">
             <button
