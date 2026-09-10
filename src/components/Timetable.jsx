@@ -11,9 +11,11 @@ import {
   ChevronLeft,
   ChevronRight,
   Sparkles,
+  Download,
   Info
 } from 'lucide-react';
 import { addDays, formatDisplayDate, getWeekDays, format12Hour } from '../utils/dateUtils';
+import { downloadICSFile } from '../utils/icsExportEngine';
 
 const Timetable = ({ onOpenHolidayModal }) => {
   const {
@@ -105,6 +107,16 @@ const Timetable = ({ onOpenHolidayModal }) => {
               Week Grid
             </button>
           </div>
+
+          <button
+            type="button"
+            className="btn-secondary flex items-center gap-1.5 py-1.5 px-3 rounded-lg text-xs"
+            onClick={() => downloadICSFile(schedule, subjects)}
+            title="Export Timetable to iCalendar (.ics)"
+          >
+            <Download size={14} />
+            <span>Export .ics</span>
+          </button>
 
           {!isHolidayReclaimed && (
             <button
