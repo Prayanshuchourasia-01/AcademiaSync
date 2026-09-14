@@ -1,8 +1,9 @@
 import React from 'react';
 import { useScheduler } from '../context/SchedulerContext';
-import { BarChart3, CheckCircle, Coffee, Clock, ShieldCheck, Zap, Award } from 'lucide-react';
+import { BarChart3, CheckCircle, Coffee, Clock, ShieldCheck, Zap, Award, Target } from 'lucide-react';
 import { formatDisplayDate } from '../utils/dateUtils';
 import { calculateWeightedGPA } from '../utils/gpaCalculator';
+import { getPeakFocusTimeSlot } from '../utils/analyticsEngine';
 
 const ReportsView = () => {
   const { systemDate, schedule, subjects, exams, notifications } = useScheduler();
@@ -13,6 +14,7 @@ const ReportsView = () => {
   const reclaimedBlocks = schedule.filter(b => b.type === 'reclaimed' || b.status === 'reclaimed').length;
   const cascadedBlocks = schedule.filter(b => b.type === 'cascaded').length;
   const currentGPA = calculateWeightedGPA(subjects, exams);
+  const peakSlot = getPeakFocusTimeSlot(schedule);
 
   const totalStudyHours = schedule
     .filter(b => b.type !== 'college')
