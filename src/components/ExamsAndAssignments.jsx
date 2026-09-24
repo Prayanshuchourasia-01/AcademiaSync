@@ -2,6 +2,7 @@ import React from 'react';
 import { useScheduler } from '../context/SchedulerContext';
 import { Award, AlertTriangle, Calendar, Clock, ArrowRight, CheckCircle2 } from 'lucide-react';
 import { diffInDays, formatDisplayDate } from '../utils/dateUtils';
+import { calculateUrgency } from '../utils/urgencyEngine';
 
 const ExamsAndAssignments = ({ onOpenExamAssignModal }) => {
   const { systemDate, exams, assignments, subjects } = useScheduler();
