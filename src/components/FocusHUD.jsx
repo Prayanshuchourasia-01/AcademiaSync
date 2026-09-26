@@ -3,6 +3,7 @@ import { useScheduler } from '../context/SchedulerContext';
 import { Play, Pause, RotateCcw, CheckCircle, Clock, Award, BookOpen, AlertCircle, Volume2 } from 'lucide-react';
 import { formatDisplayDate, format12Hour } from '../utils/dateUtils';
 import { soundFx } from '../utils/soundEffectsEngine';
+import { ambientAudio } from '../utils/ambientAudioEngine';
 
 const FocusHUD = () => {
   const { systemDate, schedule, subjects, toggleBlockCompletion } = useScheduler();
