@@ -77,3 +77,21 @@ AcademiaSync includes a built-in **System Reference Date Bar** at the top of the
 ## 📜 License
 
 MIT License © 2026 AcademiaSync Team
+
+---
+
+## ⚡ v1.0.0 Feature Suite & Streak Recovery Complete
+- Data Export & JSON Backup Modal (`dataExportEngine.js`)
+- Weighted GPA Estimator & Target Grade Calculator (`gpaCalculator.js`)
+- Web Audio Synthesized Chimes & Focus Timer Presets (`soundEffectsEngine.js`)
+- Daily Study Streak & Flame Consistency Badge (`habitTracker.js`)
+- iCalendar (.ics RFC 5545) Schedule Export (`icsExportEngine.js`)
+- Subject Management Modal & Custom Color Themes (`subjectThemes.js`)
+- Workload Heatmap & Peak Productivity Slot Calculator (`analyticsEngine.js`)
+- Global Keyboard Hotkeys Listener (`shortcutEngine.js`)
+- Chronotype Energy-Level Matching Engine (`energySchedulerEngine.js`)
+- Dynamic Application Theme Engine (`themeEngine.js`)
+- Peer Schedule Link Sharing Modal (`peerShareEngine.js`)
+- Exam Urgency & Panic Index Calculator (`urgencyEngine.js`)
+- Ambient White Noise Synthesizer (`ambientAudioEngine.js`)
+- Offline PWA Caching & Service Worker (`sw.js`, `manifest.json`)
